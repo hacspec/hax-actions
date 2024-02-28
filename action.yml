@@ -1,0 +1,30 @@
+name: 'hax'
+description: 'Install hax and setup F*'
+inputs:
+  hax_reference:
+    required: true
+    default: "main"
+  hax_repository:
+    required: true
+    default: "github:hacspec/hax"
+runs:
+  using: "composite"
+  steps:
+    - uses: DeterminateSystems/nix-installer-action@main
+
+    - name: Install & configure Cachix
+      shell: bash
+      run: |
+        nix-env --quiet -j8 -iA cachix -f https://cachix.org/api/v1/install
+        cachix use hax
+
+    - name: Install binaries
+      shell: bash
+      run: nix profile install "$FLAKE"#hax "$FLAKE"#hax-env "$FLAKE"#fstar
+      env:
+        FLAKE: "${{ inputs.hax_repository }}/${{ inputs.hax_reference }}"
+
+    - name: Setup environment variables
+      shell: bash
+      run: hax-env no-export >> $GITHUB_ENV
+      
