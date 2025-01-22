@@ -7,10 +7,17 @@ inputs:
   hax_repository:
     required: true
     default: "github:hacspec/hax"
+  fstar_reference:
+    required: true
+    default: "v2025.01.17"
+  fstar_repository:
+    required: true
+    default: "github:FStarLang/fstar"
 runs:
   using: "composite"
   steps:
     - uses: DeterminateSystems/nix-installer-action@main
+    - uses: DeterminateSystems/magic-nix-cache-action@main
 
     - name: Install & configure Cachix
       shell: bash
@@ -18,8 +25,14 @@ runs:
         nix-env --quiet -j8 -iA cachix -f https://cachix.org/api/v1/install
         cachix use hax
 
-    - name: Install binaries
+    - name: Install hax
       shell: bash
-      run: nix profile install "$FLAKE"#hax "$FLAKE"#fstar
+      run: nix profile install "$FLAKE"#hax
       env:
         FLAKE: "${{ inputs.hax_repository }}/${{ inputs.hax_reference }}"
+
+    - name: Install F*
+      shell: bash
+      run: nix profile install "$FLAKE"
+      env:
+        FLAKE: "${{ inputs.fstar_repository }}/${{ inputs.fstar_reference }}"
