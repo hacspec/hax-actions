@@ -8,8 +8,7 @@ inputs:
     required: true
     default: "github:hacspec/hax"
   fstar_reference:
-    required: true
-    default: "v2025.01.17"
+    required: false
   fstar_repository:
     required: true
     default: "github:FStarLang/fstar"
@@ -33,6 +32,12 @@ runs:
 
     - name: Install F*
       shell: bash
-      run: nix profile install "$FLAKE"
+      run: |
+        if [[ "$FLAKE" == "github:FStarLang/fstar/" ]]; then
+          REV=$(gh release -R fstarlang/fstar list -L1 --json tagName | jq '.[].tagName' -r)
+          FLAKE="github:FStarLang/fstar/$REV"
+        fi
+        nix profile install "$FLAKE"
       env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FLAKE: "${{ inputs.fstar_repository }}/${{ inputs.fstar_reference }}"
