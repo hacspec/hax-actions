@@ -20,11 +20,6 @@ runs:
 
     - name: Install binaries
       shell: bash
-      run: nix profile install "$FLAKE"#hax "$FLAKE"#hax-env "$FLAKE"#fstar
+      run: nix profile install "$FLAKE"#hax "$FLAKE"#fstar
       env:
         FLAKE: "${{ inputs.hax_repository }}/${{ inputs.hax_reference }}"
-
-    - name: Setup environment variables
-      shell: bash
-      run: hax-env no-export >> $GITHUB_ENV
-      
