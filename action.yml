@@ -13,8 +13,6 @@ runs:
   using: "composite"
   steps:
     - uses: DeterminateSystems/nix-installer-action@main
-    - uses: DeterminateSystems/magic-nix-cache-action@main
-
     - name: Install & configure Cachix
       shell: bash
       run: |
