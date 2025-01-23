@@ -9,8 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./
+        with:
+          fstar: v2025.01.17
       - run: |
           echo "F* version"
           fstar.exe --version
           echo "hax version"
           cargo hax --version
+

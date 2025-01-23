@@ -7,11 +7,8 @@ inputs:
   hax_repository:
     required: true
     default: "github:hacspec/hax"
-  fstar_reference:
-    required: false
-  fstar_repository:
+  fstar:
     required: true
-    default: "github:FStarLang/fstar"
 runs:
   using: "composite"
   steps:
@@ -33,15 +30,11 @@ runs:
     - name: Install F*
       shell: bash
       run: |
-        if [[ "$FLAKE" == "github:FStarLang/fstar/" ]]; then
-          REV=$(
-            curl -sL \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              https://api.github.com/repos/fstarlang/fstar/releases\?per_page\=1 | jq '.[] | .tag_name' -r
-          )
-          FLAKE="github:FStarLang/fstar/$REV"
-        fi
-        nix profile install "$FLAKE"
+        VARIANT="Linux-x86_64"
+        mkdir -p hax-actions-fstar-binary
+        cd hax-actions-fstar-binary
+        curl -sL "https://github.com/FStarLang/FStar/releases/download/$FSTAR/fstar-$FSTAR-$VARIANT.tar.gz" | tar xvz -
+        echo "$PWD/bin" >> $GITHUB_PATH
       env:
-        FLAKE: "${{ inputs.fstar_repository }}/${{ inputs.fstar_reference }}"
+        FSTAR: "${{ inputs.fstar }}"
+        OS: "${{ runner.os }}"
