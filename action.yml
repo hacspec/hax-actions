@@ -23,8 +23,15 @@ runs:
       shell: bash
       run: |
         VARIANT="Linux-x86_64"
-        curl -sL "https://github.com/FStarLang/FStar/releases/download/$FSTAR/fstar-$FSTAR-$VARIANT.tar.gz" -o fstar.tar.gz
+        
+        # Find download URL for the Linux build
+        URL=$(curl -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" | jq '.assets.[] | .browser_download_url | select(contains("Linux"))' -r)
+        # Download
+        echo "Trying to download $URL"
+        curl -sL "$URL" -o fstar.tar.gz
+        # Extract
         tar -xzf fstar.tar.gz
+
         mv fstar hax-actions-fstar-binary
         echo "$PWD/hax-actions-fstar-binary/bin" >> $GITHUB_PATH
       env:
@@ -36,4 +43,7 @@ runs:
       run: nix profile install "$FLAKE"#hax
       env:
         FLAKE: "${{ inputs.hax_repository }}/${{ inputs.hax_reference }}"
+
+
+
 
