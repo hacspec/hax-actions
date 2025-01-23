@@ -7,12 +7,13 @@ jobs:
   test-action:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: hacspec/hax-actions@main
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          fstar: v2024.12.03
       - run: |
-          echo "HAX_PROOF_LIBS=$HAX_PROOF_LIBS"
-          echo "HAX_LIB=$HAX_LIB"
-          echo "HACL_HOME=$HACL_HOME"
           echo "F* version"
           fstar.exe --version
-          echo "hax help"
-          cargo hax --help
+          echo "hax version"
+          cargo hax --version
+
