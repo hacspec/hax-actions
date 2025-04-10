@@ -25,7 +25,7 @@ runs:
         VARIANT="Linux-x86_64"
         
         # Find download URL for the Linux build
-        URL=$(curl -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" | jq '.assets.[] | .browser_download_url | select(contains("Linux"))' -r)
+        URL=$(curl --retry 5 -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" | jq '.assets.[] | .browser_download_url | select(contains("Linux"))' -r)
         # Download
         echo "Trying to download $URL"
         curl -sL "$URL" -o fstar.tar.gz
