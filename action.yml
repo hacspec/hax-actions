@@ -22,7 +22,7 @@ runs:
     
     - name: Install F*
       shell: bash
-      run: nix profile install "$FLAKE"#fstar
+      run: nix profile install "$FLAKE"
       env:
         FLAKE: "github:fstarlang/fstar/${{ inputs.fstar }}"
 
