@@ -24,7 +24,7 @@ runs:
       shell: bash
       run: nix profile install "$FLAKE"#fstar
       env:
-        FLAKE: "github:fstarlang/fstar/$FSTAR"
+        FLAKE: "github:fstarlang/fstar/${{ inputs.fstar }}"
 
     - name: Install hax
       shell: bash
