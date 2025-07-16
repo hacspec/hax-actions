@@ -26,12 +26,12 @@ runs:
         
         # Find download URL for the Linux build
         if [[ -z "$GH_TOKEN" || ! $(command -v gh) ]]; then
-          echo -e "\033[0;31mWARNING: fallback from `gh` to `curl`. You may hit API rate limits.\033[0m"
+          echo -e "\033[0;31mWARNING: fallback from [gh] to [curl]. You may hit API rate limits.\033[0m"
           if [[ ! $(command -v gh) ]]; then
-            echo -e "\033[0;31m         Command `gh` not found.\033[0m"
+            echo -e "\033[0;31m         Command [gh] not found.\033[0m"
           fi
           if [[ -z "$GH_TOKEN" ]]; then
-            echo -e "\033[0;31m         `GH_TOKEN` is not set.\033[0m"
+            echo -e "\033[0;31m         [GH_TOKEN] is not set.\033[0m"
             echo -e "\033[0;31m         To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.:\033[0m"
           fi
           ASSETS=$(gh release view "$FSTAR" --repo FStarLang/FStar --json assets)
