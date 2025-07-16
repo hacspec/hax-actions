@@ -18,25 +18,13 @@ runs:
       run: |
         nix-env --quiet -j8 -iA cachix -f https://cachix.org/api/v1/install
         cachix use hax
+        cachix use fstar-nix-versions
     
     - name: Install F*
       shell: bash
-      run: |
-        VARIANT="Linux-x86_64"
-        
-        # Find download URL for the Linux build
-        URL=$(curl --retry 5 -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" | jq '.assets.[] | .browser_download_url | select(contains("Linux"))' -r)
-        # Download
-        echo "Trying to download $URL"
-        curl -sL "$URL" -o fstar.tar.gz
-        # Extract
-        tar -xzf fstar.tar.gz
-
-        mv fstar hax-actions-fstar-binary
-        echo "$PWD/hax-actions-fstar-binary/bin" >> $GITHUB_PATH
+      run: nix profile install "$FLAKE"
       env:
-        FSTAR: "${{ inputs.fstar }}"
-        OS: "${{ runner.os }}"
+        FLAKE: "github:fstarlang/fstar/${{ inputs.fstar }}"
 
     - name: Install hax
       shell: bash
