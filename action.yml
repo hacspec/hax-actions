@@ -25,11 +25,20 @@ runs:
         VARIANT="Linux-x86_64"
         
         # Find download URL for the Linux build
-        URL=$(
-          ( gh release view "$FSTAR" --repo FStarLang/FStar --json assets || \
-            curl --retry 5 -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" ) \
-            | jq '.assets.[] | (.url // .browser_download_url) | select(contains("Linux"))' -r
-        )
+        if [[ -z "$GH_TOKEN" || ! $(command -v gh) ]]; then
+          echo -e "\033[0;31mWARNING: fallback from `gh` to `curl`. You may hit API rate limits.\033[0m"
+          if [[ ! $(command -v gh) ]]; then
+            echo -e "\033[0;31m         Command `gh` not found.\033[0m"
+          fi
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo -e "\033[0;31m         `GH_TOKEN` is not set.\033[0m"
+            echo -e "\033[0;31m         To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.:\033[0m"
+          fi
+          ASSETS=$(gh release view "$FSTAR" --repo FStarLang/FStar --json assets)
+        else
+          ASSETS=$(curl --retry 5 -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" ))
+        fi
+        URL=$(echo "$ASSETS" | jq '.assets.[] | (.url // .browser_download_url) | select(contains("Linux"))' -r)
         # Download
         echo "Trying to download $URL"
         curl -sL "$URL" -o fstar.tar.gz
