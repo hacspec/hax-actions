@@ -36,7 +36,7 @@ runs:
           fi
           ASSETS=$(gh release view "$FSTAR" --repo FStarLang/FStar --json assets)
         else
-          ASSETS=$(curl --retry 5 -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR" ))
+          ASSETS=$(curl --retry 5 -sL "https://api.github.com/repos/FStarLang/FStar/releases/tags/$FSTAR")
         fi
         URL=$(echo "$ASSETS" | jq '.assets.[] | (.url // .browser_download_url) | select(contains("Linux"))' -r)
         # Download
