@@ -12,7 +12,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: DeterminateSystems/nix-installer-action@main
+    - uses: DeterminateSystems/nix-installer-action@v4
+      with:
+        determinate: true
     - name: Install & configure Cachix
       shell: bash
       run: |
