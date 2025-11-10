@@ -15,25 +15,14 @@ runs:
     - uses: DeterminateSystems/nix-installer-action@v4
       with:
         determinate: true
-    - name: Install & configure Cachix
-      shell: bash
-      run: |
-        nix-env --quiet -j8 -iA cachix -f https://cachix.org/api/v1/install
-        cachix use hax
-        cachix use fstar-nix-versions
-    
+    - uses: DeterminateSystems/magic-nix-cache-action@main
     - name: Install F*
       shell: bash
       run: nix profile install "$FLAKE"
       env:
         FLAKE: "github:fstarlang/fstar/${{ inputs.fstar }}"
-
     - name: Install hax
       shell: bash
       run: nix profile install "$FLAKE"#hax
       env:
         FLAKE: "${{ inputs.hax_repository }}/${{ inputs.hax_reference }}"
-
-
-
-
