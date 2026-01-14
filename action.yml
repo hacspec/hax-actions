@@ -16,7 +16,7 @@ runs:
       with:
         determinate: true
     - uses: DeterminateSystems/magic-nix-cache-action@main
-    - with:
+      with:
         use-flakehub: false
     - name: Install F*
       shell: bash
