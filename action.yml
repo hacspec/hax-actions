@@ -12,7 +12,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: DeterminateSystems/nix-installer-action@v4
+    - uses: DeterminateSystems/nix-installer-action@v21
       with:
         determinate: true
     - uses: DeterminateSystems/magic-nix-cache-action@main
