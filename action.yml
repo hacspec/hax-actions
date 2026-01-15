@@ -8,7 +8,9 @@ inputs:
     required: true
     default: "github:hacspec/hax"
   fstar:
-    required: true
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -18,11 +20,14 @@ runs:
     - uses: DeterminateSystems/magic-nix-cache-action@main
       with:
         use-flakehub: false
+
     - name: Install F*
+      if: inputs.fstar != ''
       shell: bash
       run: nix profile install "$FLAKE"
       env:
         FLAKE: "github:fstarlang/fstar/${{ inputs.fstar }}"
+
     - name: Install hax
       shell: bash
       run: nix profile install "$FLAKE"#hax
