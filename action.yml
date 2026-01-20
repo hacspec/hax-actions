@@ -26,7 +26,7 @@ runs:
       id: binary-install
       shell: bash
       env: 
-        VERSION: "${{ inputs.version }}"
+        VERSION: "${{ inputs.fstar }}"
       run: |
         OS_NAME=$(uname -s)
         ARCH=$(uname -m)
