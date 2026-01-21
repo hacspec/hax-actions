@@ -21,8 +21,46 @@ runs:
       with:
         use-flakehub: false
 
-    - name: Install F*
+    - name: Try to install prebuilt F* binary    
       if: inputs.fstar != ''
+      id: binary-install
+      shell: bash
+      env: 
+        VERSION: "${{ inputs.fstar }}"
+      run: |
+        OS_NAME=$(uname -s)
+        ARCH=$(uname -m)
+        
+        # Map OS and Architecture to the URL format
+        if [ "$OS_NAME" = "Darwin" ]; then
+          PLATFORM="Darwin-arm64"
+        elif [ "$OS_NAME" = "Linux" ] && [ "$ARCH" = "x86_64" ]; then
+          PLATFORM="Linux-x86_64"
+        else
+          echo "Unsupported platform for binary; falling back to Nix."
+          echo "installed=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        URL="https://github.com/FStarLang/FStar/releases/download/$VERSION/fstar-$VERSION-$PLATFORM.tar.gz"
+        
+        # Check if the URL exists using a HEAD request
+        if curl --output /dev/null --silent --head --fail "$URL"; then
+          echo "Downloading $URL..."
+          curl -L "$URL" -o fstar.tar.gz
+          mkdir -p $HOME/.fstar
+          tar -xzf fstar.tar.gz -C $HOME/.fstar --strip-components=2
+          
+          # Add the bin directory to the GitHub PATH
+          echo "$HOME/.fstar/bin" >> $GITHUB_PATH
+          echo "installed=true" >> $GITHUB_OUTPUT
+        else
+          echo "Prebuilt binary not found at $URL; falling back to Nix."
+          echo "installed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Install F*
+      if: inputs.fstar != '' && steps.binary-install.outputs.installed == 'false'
       shell: bash
       run: nix profile install "$FLAKE"
       env:
