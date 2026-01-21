@@ -49,7 +49,7 @@ runs:
           echo "Downloading $URL..."
           curl -L "$URL" -o fstar.tar.gz
           mkdir -p $HOME/.fstar
-          tar -xzf fstar.tar.gz -C $HOME/.fstar --strip-components=1
+          tar -xzf fstar.tar.gz -C $HOME/.fstar --strip-components=2
           
           # Add the bin directory to the GitHub PATH
           echo "$HOME/.fstar/bin" >> $GITHUB_PATH
